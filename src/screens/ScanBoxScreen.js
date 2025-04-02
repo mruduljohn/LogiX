@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, Text, SafeAreaView } from 'react-native';
-import { BarCodeScanner } from 'expo-barcode-scanner';
+import { View, StyleSheet, Text, SafeAreaView, Linking, Platform } from 'react-native';
+import { Camera } from 'expo-camera';
+import { useNavigation } from '@react-navigation/native';
 import Button from '../components/Button';
 import useStore from '../context/store';
 
@@ -21,12 +22,12 @@ const ScanBoxScreen = () => {
   });
   
   useEffect(() => {
-    const getBarCodeScannerPermissions = async () => {
-      const { status } = await BarCodeScanner.requestPermissionsAsync();
+    const getCameraPermissions = async () => {
+      const { status } = await Camera.requestCameraPermissionsAsync();
       setHasPermission(status === 'granted');
     };
     
-    getBarCodeScannerPermissions();
+    getCameraPermissions();
   }, []);
   
   const handleBarCodeScanned = ({ type, data }) => {
@@ -83,10 +84,12 @@ const ScanBoxScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.scanner}>
-        <BarCodeScanner
-          onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
+        <Camera
           style={StyleSheet.absoluteFillObject}
-          barCodeTypes={[BarCodeScanner.Constants.BarCodeType.qr]}
+          onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
+          barCodeScannerSettings={{
+            barCodeTypes: ['qr'],
+          }}
         />
         
         {scanned && (

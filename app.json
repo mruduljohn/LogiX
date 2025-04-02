@@ -43,7 +43,7 @@
       "bundler": "metro"
     },
     "plugins": [
-      "expo-barcode-scanner"
+      "expo-camera"
     ],
     "extra": {
       "eas": {
